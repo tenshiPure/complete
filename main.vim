@@ -2,28 +2,22 @@ set completefunc=MyComplete
 
 function! MyComplete(findstart, base)
 	if a:findstart
-		" func みたいな行で<C-p>
-		" 1桁目からカーソルまでがa:baseになる
-		return 1
+		return 0
 	else
-		" いきなり<C-p>してみる
-		" 補完候補が下記になる
-		return ['stan', 'kyle', 'cartman', 'kenny']
+		" 試しに動かしてみる
+		return GetWords(a:base)
 	endif
 endfunction
 
-function! Hello()
-	echo 'hello world'
+function! GetWords(base)
+	if a:base == 's'
+		return ['solid', 'solidus']
+	else
+		return ['solid', 'liquid', 'solidus']
+	endif
 endfunction
 
-" so %
-" :call Hello()
-
-command! H call Hello()
-
-" so %
-" :H
-
-" :command! Run so ~/Dropbox/dev/complete/main.vim | H
-
-" hello world!!!
+" 要はbaseを投げて配列を返せば良い
+" :let $base = 's'
+" :echo $base
+" :command! Run wall | so ~/Dropbox/dev/complete/main.vim | echo GetWords($base)
