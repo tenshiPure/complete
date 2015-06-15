@@ -4,20 +4,20 @@ function! MyComplete(findstart, base)
 	if a:findstart
 		return 0
 	else
+		let candidates = GetCandidates()
 		" 試しに動かしてみる
-		return GetWords(a:base)
+		return GetWords(a:base, candidates)
 	endif
 endfunction
 
-function! GetWords(base)
-	if a:base == 's'
-		return ['solid', 'solidus']
-	else
-		return ['solid', 'liquid', 'solidus']
-	endif
+function! GetCandidates()
+	return ['solid', 'liquid', 'solidus']
+endfunction
+
+function! GetWords(base, candidates)
+	let pattern = '^' . a:base . '.*'
+	return filter(a:candidates, 'v:val =~# pattern')
 endfunction
 
 " 要はbaseを投げて配列を返せば良い
-" :let $base = 's'
-" :echo $base
-" :command! Run wall | so ~/Dropbox/dev/complete/main.vim | echo GetWords($base)
+" が、もう一手間。単語候補は外から投げた方が作りやすいと思う
