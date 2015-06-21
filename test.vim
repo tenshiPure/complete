@@ -19,24 +19,21 @@ endfunction
 
 function! MakePatternTest(base, expected)
     let actual = MakePattern(a:base)
-    if a:expected ==# actual
-        echo "OK\n\n"
-    else
-        echo 'NG'
-        echo a:expected
-        echo actual
-        echon "\n\n"
-    endif
+    call Assert(a:expected, actual)
 endfunction
 
 function! GetWordsTest(base, expected)
     let actual = GetWords(a:base, GetCandidates())
-    if a:expected ==# actual
+    call Assert(a:expected, actual)
+endfunction
+
+function! Assert(expected, actual)
+    if a:expected ==# a:actual
         echo "OK\n\n"
     else
         echo 'NG'
         echo a:expected
-        echo actual
-        echon "\n\n"
+        echo a:actual
+        echo "\n"
     endif
 endfunction
