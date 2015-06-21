@@ -7,6 +7,14 @@ function! Test()
     call MakePatternTest('sPC', '^s.*P.*c.*')
     call MakePatternTest('mR', '^m.*R.*')
     call MakePatternTest('moR', '^m.*o.*R.*')
+
+    call GetWordsTest('sP', ['servicePlan', 'servicePrice', 'servicePerContract'])
+    call GetWordsTest('sC', ['serviceCount', 'serviceCode', 'servicePerContract'])
+    call GetWordsTest('sC', ['serviceCount', 'serviceCode'])
+    call GetWordsTest('sPC', ['servicePerContract'])
+    call GetWordsTest('mR', ['mockResponse', 'makeRequest'])
+    call GetWordsTest('moR', ['mockResponse'])
+    call GetWordsTest('mP', [])
 endfunction
 
 function! MakePatternTest(base, expected)
@@ -14,7 +22,21 @@ function! MakePatternTest(base, expected)
     if a:expected ==# actual
         echo "OK\n\n"
     else
-        echo 'NG | expected : ' . a:expected
-        echo '     actual   : ' . actual . "\n\n"
+        echo 'NG'
+        echo a:expected
+        echo actual
+        echon "\n\n"
+    endif
+endfunction
+
+function! GetWordsTest(base, expected)
+    let actual = GetWords(a:base, GetCandidates())
+    if a:expected ==# actual
+        echo "OK\n\n"
+    else
+        echo 'NG'
+        echo a:expected
+        echo actual
+        echon "\n\n"
     endif
 endfunction
