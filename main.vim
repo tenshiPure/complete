@@ -10,7 +10,8 @@ function! MyComplete(findstart, base)
 endfunction
 
 function! FindWordhead()
-    return 0
+    let leftFromCursor = strpart(getline('.'), 0, col('.') - 1)
+    return match(leftFromCursor, '[a-zA-Z0-9*$_]*$')
 endfunction
 
 function! GetCandidates()
