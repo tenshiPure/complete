@@ -15,7 +15,26 @@ function! FindWordhead()
 endfunction
 
 function! GetCandidates()
-    return ['serviceCount', 'serviceCode', 'mockResponse', 'makeRequest', 'servicePlan', 'servicePrice', 'servicePerContract']
+    let words = []
+
+    for line in s:lines()
+        let words += split(line, '[^a-zA-Z0-9_$]')
+    endfor
+
+    return words
+endfunction
+
+function! s:lines()
+    let n = 1
+    let last = bufnr('$')
+    let lines = []
+
+    while n <= last
+        let lines += getbufline(n, 1, '$')
+        let n = n + 1
+    endwhile
+
+    return lines
 endfunction
 
 function! GetWords(base, candidates)
