@@ -5,7 +5,7 @@ function! MyComplete(findstart, base)
         return FindWordhead()
     else
         let candidates = GetCandidates()
-        return GetWords(a:base, candidates)
+        return AddWords(a:base, candidates)
     endif
 endfunction
 
@@ -15,31 +15,52 @@ function! FindWordhead()
 endfunction
 
 function! GetCandidates()
-    let words = []
+    let words = {}
 
-    for line in s:lines()
-        let words += split(line, '[^a-zA-Z0-9_$]')
+    for pair in items(LinesWithBufName())
+        let words[pair[0]] = []
+        for line in pair[1]
+            let words[pair[0]] += split(line, '[^a-zA-Z0-9_$]')
+        endfor
     endfor
 
     return words
 endfunction
 
-function! s:lines()
+function! LinesWithBufName()
     let n = 1
     let last = bufnr('$')
-    let lines = []
+    let lines = {}
 
     while n <= last
-        let lines += getbufline(n, 1, '$')
+        if bufname(n) == ''
+            let n = n + 1
+            continue
+        else
+            let name = bufname(n)
+        endif
+        let lines[name] = []
+        let lines[name] += getbufline(n, 1, '$')
         let n = n + 1
     endwhile
 
     return lines
 endfunction
 
-function! GetWords(base, candidates)
+function! AddWords(base, candidates)
+    let result = []
     let pattern = MakePattern(a:base)
-    return filter(a:candidates, 'v:val =~# pattern')
+
+    for pair in items(a:candidates)
+        for word in pair[1]
+            if word =~# pattern
+                call complete_add({'word' : word, 'menu' : pair[0]})
+                let result = add(result, word)
+            endif
+        endfor
+    endfor
+
+    return result
 endfunction
 
 function! MakePattern(base)
